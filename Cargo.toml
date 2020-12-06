@@ -1,0 +1,13 @@
+[package]
+name = "bevy_settings_assets"
+version = "0.1.0"
+authors = ["Alec Deason <alec@tinycountry.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bevy = { git = "https://github.com/bevyengine/bevy.git" }
+serde = "1.0.117"
+ron = "0.6.2"
+anyhow = "1.0.34"
