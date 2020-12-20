@@ -40,7 +40,7 @@ impl Plugin for SettingsPlugin {
         app.add_asset::<SettingsString>()
             .init_asset_loader::<SettingsLoader>()
             .init_resource::<Settings>()
-            .add_system_to_stage(stage::PRE_UPDATE, setting_strings_system);
+            .add_system_to_stage(stage::PRE_UPDATE, setting_strings_system.system());
     }
 }
 
