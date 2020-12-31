@@ -27,9 +27,8 @@ impl Settings {
         self.0.insert(
             handle,
             Box::new(|string, commands| {
-                if let Ok(settings) = ron::de::from_str::<T>(&string) {
-                    commands.insert_resource(settings);
-                }
+                let settings = ron::de::from_str::<T>(&string);
+                commands.insert_resource(settings.unwrap());
             }),
         );
     }
