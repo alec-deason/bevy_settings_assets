@@ -70,12 +70,11 @@ impl AssetLoader for SettingsLoader {
 
 fn setting_strings_system(
     commands: &mut Commands,
-    settings_events: Res<Events<AssetEvent<SettingsString>>>,
-    mut reader: Local<EventReader<AssetEvent<SettingsString>>>,
+    mut reader: EventReader<AssetEvent<SettingsString>>,
     settings_strings: Res<Assets<SettingsString>>,
     mut settings: ResMut<Settings>,
 ) {
-    for event in reader.iter(&settings_events) {
+    for event in reader.iter() {
         if let AssetEvent::Modified { handle } | AssetEvent::Created { handle } = event {
             for (target_handle, resource_constructor) in &mut settings.0 {
                 if target_handle.id == handle.id {
