@@ -24,9 +24,10 @@ impl Settings {
     ) {
         commands.insert_resource(T::default());
         let handle = asset_server.load_untyped(path);
+        asset_server.watch_for_changes().unwrap();
         self.0.insert(
             handle,
-            Box::new(|string, commands| {
+            Box::new(move |string, commands| {
                 let settings = ron::de::from_str::<T>(&string);
                 commands.insert_resource(settings.unwrap());
             }),
@@ -39,7 +40,7 @@ impl Plugin for SettingsPlugin {
         app.add_asset::<SettingsString>()
             .init_asset_loader::<SettingsLoader>()
             .init_resource::<Settings>()
-            .add_system_to_stage(stage::PRE_UPDATE, setting_strings_system.system());
+            .add_system_to_stage(CoreStage::PostUpdate, setting_strings_system.system());
     }
 }
 
@@ -69,7 +70,7 @@ impl AssetLoader for SettingsLoader {
 }
 
 fn setting_strings_system(
-    commands: &mut Commands,
+    mut commands: Commands,
     mut reader: EventReader<AssetEvent<SettingsString>>,
     settings_strings: Res<Assets<SettingsString>>,
     mut settings: ResMut<Settings>,
@@ -79,7 +80,7 @@ fn setting_strings_system(
             for (target_handle, resource_constructor) in &mut settings.0 {
                 if target_handle.id == handle.id {
                     if let Some(string) = settings_strings.get(handle) {
-                        resource_constructor(string.0.clone(), commands);
+                        resource_constructor(string.0.clone(), &mut commands);
                     }
                     break;
                 }
